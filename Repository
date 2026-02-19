@@ -1,1 +1,159 @@
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Repository {
+
+    private final String DB_URL;
+
+    public Repository() {
+        this.DB_URL = "jdbc:sqlite:students.db";
+        initTable();
+    }
+
+    // Creates the students table if it does not exist
+    private void initTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS students ("
+                + "idNumber      INTEGER PRIMARY KEY,"
+                + "firstName     TEXT    NOT NULL,"
+                + "lastName      TEXT    NOT NULL,"
+                + "age           INTEGER NOT NULL,"
+                + "gender        TEXT    NOT NULL,"
+                + "yearLevel     INTEGER NOT NULL,"
+                + "section       TEXT    NOT NULL,"
+                + "address       TEXT    NOT NULL,"
+                + "contactNumber INTEGER NOT NULL,"
+                + "bloodType     TEXT    NOT NULL"
+                + ");";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            System.err.println("Error initializing table: " + e.getMessage());
+        }
+    }
+
+    // Adds a single Student object to the database
+    public void addStudent(Student student) {
+        String sql = "INSERT OR IGNORE INTO students "
+                + "(idNumber, firstName, lastName, age, gender, yearLevel, section, address, contactNumber, bloodType) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt   (1,  student.getIdNumber());
+            pstmt.setString(2,  student.getFirstName());
+            pstmt.setString(3,  student.getLastName());
+            pstmt.setInt   (4,  student.getAge());
+            pstmt.setString(5,  student.getGender());
+            pstmt.setInt   (6,  student.getYearLevel());
+            pstmt.setString(7,  student.getSection());
+            pstmt.setString(8,  student.getAddress());
+            pstmt.setLong  (9,  student.getContactNumber());
+            pstmt.setString(10, student.getBloodType());
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("Error adding student: " + e.getMessage());
+        }
+    }
+
+    // Finds a single student by their ID number
+    public Student findStudentByID(int id) {
+        String sql = "SELECT * FROM students WHERE idNumber = ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return buildStudentFromResultSet(rs);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error finding student: " + e.getMessage());
+        }
+        return null;
+    }
+
+    // Returns all students from the database as a list of Student objects
+    public List<Student> getAllStudents() {
+        List<Student> students = new ArrayList<>();
+        String sql = "SELECT * FROM students ORDER BY idNumber";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                students.add(buildStudentFromResultSet(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error retrieving students: " + e.getMessage());
+        }
+        return students;
+    }
+
+    // Updates an existing student record
+    public void updateStudent(Student student) {
+        String sql = "UPDATE students SET firstName=?, lastName=?, age=?, gender=?, "
+                + "yearLevel=?, section=?, address=?, contactNumber=?, bloodType=? "
+                + "WHERE idNumber=?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1,  student.getFirstName());
+            pstmt.setString(2,  student.getLastName());
+            pstmt.setInt   (3,  student.getAge());
+            pstmt.setString(4,  student.getGender());
+            pstmt.setInt   (5,  student.getYearLevel());
+            pstmt.setString(6,  student.getSection());
+            pstmt.setString(7,  student.getAddress());
+            pstmt.setLong  (8,  student.getContactNumber());
+            pstmt.setString(9,  student.getBloodType());
+            pstmt.setInt   (10, student.getIdNumber());
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("Error updating student: " + e.getMessage());
+        }
+    }
+
+    // Deletes a student by their ID number
+    public void deleteStudent(int id) {
+        String sql = "DELETE FROM students WHERE idNumber = ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("Error deleting student: " + e.getMessage());
+        }
+    }
+
+    // Helper: builds a Student object from a ResultSet row
+    private Student buildStudentFromResultSet(ResultSet rs) throws SQLException {
+        return new Student.StudentBuilder()
+                .setIdNumber     (rs.getInt   ("idNumber"))
+                .setFirstName    (rs.getString("firstName"))
+                .setLastName     (rs.getString("lastName"))
+                .setAge          (rs.getInt   ("age"))
+                .setGender       (rs.getString("gender"))
+                .setYearLevel    (rs.getInt   ("yearLevel"))
+                .setSection      (rs.getString("section"))
+                .setAddress      (rs.getString("address"))
+                .setContactNumber(rs.getLong  ("contactNumber"))
+                .setBloodType    (rs.getString("bloodType"))
+                .build();
+    }
+}
 
