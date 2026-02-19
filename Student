@@ -1,1 +1,78 @@
+public class Student {
+
+    private String firstname;
+    private String surname;
+    private int age;
+    private String gender;
+    private int year;
+    private String section;
+    private int studentID;
+    private String address;
+    private int phoneNumber;
+    private String bloodType;
+
+    // Private constructor — only StudentBuilder can create a Student
+    private Student() {}
+
+    // Getters 
+    public String getFirstname()   { return firstname;   }
+    public String getSurname()     { return surname;     }
+    public int    getAge()         { return age;         }
+    public String getGender()      { return gender;      }
+    public int    getYear()        { return year;        }
+    public String getSection()     { return section;     }
+    public int    getStudentID()   { return studentID;   }
+    public String getAddress()     { return address;     }
+    public int    getPhoneNumber() { return phoneNumber; }
+    public String getBloodType()   { return bloodType;   }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "| %-12s | %-12s | %-3d | %-6s | %-4d | %-8s | %-10d | %-20s | %-11d | %-9s |",
+            firstname, surname, age, gender, year, section, studentID, address, phoneNumber, bloodType
+        );
+    }
+
+    // Static Builder 
+    public static class StudentBuilder {
+
+        private String firstname;
+        private String surname;
+        private int    age;
+        private String gender;
+        private int    year;
+        private String section;
+        private int    studentID;
+        private String address;
+        private int    phoneNumber;
+        private String bloodType;
+
+        public StudentBuilder setFirstName(String firstname)     { this.firstname   = firstname;   return this; }
+        public StudentBuilder setSurname(String surname)         { this.surname     = surname;     return this; }
+        public StudentBuilder setAge(int age)                    { this.age         = age;         return this; }
+        public StudentBuilder setGender(String gender)           { this.gender      = gender;      return this; }
+        public StudentBuilder setYear(int year)                  { this.year        = year;        return this; }
+        public StudentBuilder setSection(String section)         { this.section     = section;     return this; }
+        public StudentBuilder setStudentID(int studentID)        { this.studentID   = studentID;   return this; }
+        public StudentBuilder setAddress(String address)         { this.address     = address;     return this; }
+        public StudentBuilder setPhoneNumber(int phoneNumber)    { this.phoneNumber = phoneNumber; return this; }
+        public StudentBuilder setBloodType(String bloodType)     { this.bloodType   = bloodType;   return this; }
+
+        public Student build() {
+            Student s = new Student();
+            s.firstname   = this.firstname;
+            s.surname     = this.surname;
+            s.age         = this.age;
+            s.gender      = this.gender;
+            s.year        = this.year;
+            s.section     = this.section;
+            s.studentID   = this.studentID;
+            s.address     = this.address;
+            s.phoneNumber = this.phoneNumber;
+            s.bloodType   = this.bloodType;
+            return s;
+        }
+    }
+}
 
