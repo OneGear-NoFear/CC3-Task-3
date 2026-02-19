@@ -1,1 +1,90 @@
+import java.util.List;
 
+public class Main {
+
+    public static void main(String[] args) {
+
+        Repository repository = new Repository();
+
+        // ── Store 10 student details using Student objects ────────────────────
+        Student[] students = {
+            new Student.StudentBuilder()
+                .setStudentID(1001).setFirstName("Maria").setSurname("Santos")
+                .setAge(19).setGender("Female").setYear(2).setSection("A")
+                .setAddress("Quezon City").setPhoneNumber(9123456789).setBloodType("O+")
+                .build(),
+
+            new Student.StudentBuilder()
+                .setStudentID(1002).setFirstName("Juan").setSurname("Dela Cruz")
+                .setAge(20).setGender("Male").setYear(2).setSection("A")
+                .setAddress("Manila").setPhoneNumber(912345678).setBloodType("A+")
+                .build(),
+
+            new Student.StudentBuilder()
+                .setStudentID(1003).setFirstName("Ana").setSurname("Reyes")
+                .setAge(18).setGender("Female").setYear(1).setSection("B")
+                .setAddress("Caloocan").setPhoneNumber(911111111).setBloodType("B+")
+                .build(),
+
+            new Student.StudentBuilder()
+                .setStudentID(1004).setFirstName("Carlo").setSurname("Gomez")
+                .setAge(21).setGender("Male").setYear(3).setSection("C")
+                .setAddress("Pasig").setPhoneNumber(922222222).setBloodType("AB+")
+                .build(),
+
+            new Student.StudentBuilder()
+                .setStudentID(1005).setFirstName("Liza").setSurname("Bautista")
+                .setAge(19).setGender("Female").setYear(2).setSection("B")
+                .setAddress("Marikina").setPhoneNumber(933333333).setBloodType("O-")
+                .build(),
+
+            new Student.StudentBuilder()
+                .setStudentID(1006).setFirstName("Marco").setSurname("Torres")
+                .setAge(22).setGender("Male").setYear(4).setSection("A")
+                .setAddress("Taguig").setPhoneNumber(944444444).setBloodType("A-")
+                .build(),
+
+            new Student.StudentBuilder()
+                .setStudentID(1007).setFirstName("Nina").setSurname("Flores")
+                .setAge(20).setGender("Female").setYear(3).setSection("C")
+                .setAddress("Mandaluyong").setPhoneNumber(955555555).setBloodType("B-")
+                .build(),
+
+            new Student.StudentBuilder()
+                .setStudentID(1008).setFirstName("Paolo").setSurname("Ramos")
+                .setAge(18).setGender("Male").setYear(1).setSection("A")
+                .setAddress("Las Pinas").setPhoneNumber(966666666).setBloodType("AB-")
+                .build(),
+
+            new Student.StudentBuilder()
+                .setStudentID(1009).setFirstName("Sofia").setSurname("Aquino")
+                .setAge(21).setGender("Female").setYear(3).setSection("B")
+                .setAddress("Paranaque").setPhoneNumber(977777777).setBloodType("O+")
+                .build(),
+
+            new Student.StudentBuilder()
+                .setStudentID(1010).setFirstName("Andres").setSurname("Villanueva")
+                .setAge(23).setGender("Male").setYear(4).setSection("C")
+                .setAddress("Muntinlupa").setPhoneNumber(988888888).setBloodType("A+")
+                .build()
+        };
+
+        for (Student s : students) {
+            repository.addStudent(s);
+        }
+
+        // ── Generate master list ──────────────────────────────────────────────
+        System.out.println("\n╔══════════════════════════════════════════ MASTER LIST OF STUDENTS ═══════════════════════════════════════════╗");
+        System.out.printf("| %-12s | %-12s | %-3s | %-6s | %-4s | %-8s | %-10s | %-20s | %-11s | %-9s |%n",
+                "First Name", "Surname", "Age", "Gender", "Year", "Section", "Student ID", "Address", "Phone", "Blood Type");
+        System.out.println("|─────────────────────────────────────────────────────────────────────────────────────────────────────────────|");
+
+        List<Student> allStudents = repository.getAllStudents();
+        for (Student s : allStudents) {
+            System.out.println(s);
+        }
+
+        System.out.println("╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝");
+        System.out.println("\nTotal students: " + allStudents.size());
+    }
+}
